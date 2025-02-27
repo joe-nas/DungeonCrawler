@@ -42,20 +42,24 @@ class Weapon(Item):
 # Potion
 ##############################################
 
-# class Potion(Item):
-#     def __init__(self, name, size, price=1, stat, value =0,duration =0):
-#         super().__init__(name, size, price,duration)
-#         self.stat = stat
-#         self.value = value
-#         self.duration = duration
 
-# def __str__(self):
-#     description = f"A {self.name} potion, that increases your {self.stat} by {self.value} for {self.duration} rooms. Can be sold for {self.price} gold"
+class Potion(Item):
+    def __init__(self, name, size, stat, price=1, value=0, duration=0):
+        super().__init__(name, size, price)
+        self.stat = stat
+        self.value = value
+        self.duration = duration
 
-#     match self.stat:
-#         case "armor":
-#             return description
-#         case "attack":
-#             return description
-#         case "health":
-#             return f"A {self.name} potion. Restores {self.value} {self.stat}. Can be sold for {self.price} gold"
+    def __str__(self):
+        description = f"A {self.name} potion, that increases your {self.stat} by {self.value} for {self.duration} rooms. Can be sold for {self.price} gold"
+        match self.stat:
+            case "armor":
+                return description
+            case "attack":
+                return description
+            case "health":
+                return f"A {self.name} potion. Restores {self.value} {self.stat}. Can be sold for {self.price} gold"
+
+
+healthpotion = Potion("health", "laegr", "armor", 1, 1, 1)
+print(healthpotion)
