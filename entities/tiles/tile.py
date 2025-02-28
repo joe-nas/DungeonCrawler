@@ -1,28 +1,77 @@
 import random
 
+terrain_types = {
+    # ("terrain","unicode char","entropy")
+    "water":("water", "\U0001F4A7", ["water", "coast"]),
+    "coast":("coast", "\U0001F30A", ["coast", "water", "grassland"]),
+    "grassland":("grassland", "\U0001F7E9", ["grassland", "coast", "forrest"]),
+    "forrest":("forrest", "\U0001F332", ["forrest", "grassland"]),
+    # ("coast_ne", "\U0001F30A"),
+    # ("coast_e", "\U0001F30A"),
+    # ("coast_se", "\U0001F30A"),
+    # ("coast_s", "\U0001F30A"),
+    # ("coast_sw", "\U0001F30A"),
+    # ("coast_w", "\U0001F30A"),
+    # ("coast_nw", "\U0001F30A"),
+}
+
+
 
 class Tile:
-    def __init__(self, coordinates, entropy):
-        self.terrain = ""
-        self.coordinates = coordinates
-        self.neighbours = []
-        self.entropy = entropy
+    # add to tile coordinates to get neighbouring tile coordinates
+    relative_neighbours = [
+        (-1, 1),
+        (0, 1),
+        (1, 1),
+        (-1, 0),
+        (1, 0),
+        (-1, -1),
+        (0, -1),
+        (1, -1),
+        ]
+    
+    # list of tuples 
+    neighbours_xy = []
+    entropy = 99
+
+    def __init__(self, x,y, terrain_types):
+        # dict of tuples {"water": ("water","\U0001F4A7",["water", "coast"])}
+        self.terrain_types = terrain_types
+        self.coordinates = (x,y)
+        self.neighbours_xy = self.get_neighbours()
+
+
+
 
     def get_neighbours(self):
-        neighbours = [
-            (-1, 1),
-            (0, 1),
-            (1, 1),
-            (-1, 0),
-            (1, 0),
-            (-1, -1),
-            (0, -1),
-            (1, -1),
-        ]
+        """
+        creates a list of tuples corresponding to the x,y coordinates of the neighbouring tiles.
+        Yields:
+            list: a list of tuples [(x1,y1), ... (xn,yn)]
+        """  
+        for x,y in self.relative_neighbours:
+            yield (self.coordinates[0]+x, self.coordinates[1]+y)
+
+
+
+
+    def set_terrain_type(self,terrain_type):
+        """_summary_
+        sets a the terrain-type of a tile. self.terrain_type should be a tuple containing:\n
+            ("water","\\U0001F4A7",["water", "coast"])
+        Args:
+            terrain_type (_str_): str corresponding to a terrain type e.g. "water"
+        """
+        self.terrain_type = terrain_types.get(terrain_type)
+        self.entropy = len(self.terrain_type[2])
 
     def __str__(self):
-        return self.coordinates
+        return f"x: {self.coordinates[0]}, y: {self.coordinates[1]}, terrain: {self.terrain_type}, entropy: {self.entropy}"
 
+t = Tile(3,4,terrain_types)
+[print(x) for x in t.neighbours_xy]
+t.set_terrain_type("water")
+print(t)
 
 # map max entropy
 # place random tile
@@ -32,22 +81,6 @@ class Tile:
 # choose tile with lowest entropy
 
 # for surrounding tiles calculate entropy
-
-
-terrain_types = [
-    # ("terrain","unicode char","entropy")
-    ("water", "\U0001F4A7", ["water", "coast_n"]),
-    ("coast_n", "\U0001F30A", ["coast_n", "water", "grassland"]),
-    ("grassland", "\U0001F7E9", ["grassland", "coast_n", "forrest"]),
-    ("forrest", "\U0001F332", ["forrest", "grassland"]),
-    # ("coast_ne", "\U0001F30A"),
-    # ("coast_e", "\U0001F30A"),
-    # ("coast_se", "\U0001F30A"),
-    # ("coast_s", "\U0001F30A"),
-    # ("coast_sw", "\U0001F30A"),
-    # ("coast_w", "\U0001F30A"),
-    # ("coast_nw", "\U0001F30A"),
-]
 
 
 class GameMap:
