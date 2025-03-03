@@ -75,9 +75,10 @@ class Tile:
         return f"x: {self.coordinates[0]}, y: {self.coordinates[1]}, terrain: {self.terrain_type}, entropy: {self.entropy}"
 
 t = Tile(3,4,terrain_types)
-[print(x) for x in t.neighbours_xy]
-t.set_terrain_type("water")
-print(t)
+# [print(x) for x in t.neighbours_xy]
+# t.set_terrain_type("water")
+# print(t.entropy)
+# print(t)
 
 # map max entropy
 # place random tile
@@ -91,12 +92,12 @@ print(t)
 
 class GameMap:
 
-    def __init__(self, nrow, ncol):
-        self.nrow = nrow
-        self.ncol = ncol
-        self.game_map = self.create_map(nrow, ncol)
+    def __init__(self, nrows, ncols):
+        self.nrows = nrows
+        self.ncols = ncols
+        self.game_map = self.create_map(nrows, ncols)
 
-    def create_map(self, nrow, ncol):
+    def create_map(self, nrows, ncols):
         """
         Creates and returns a blank map.
 
@@ -109,18 +110,19 @@ class GameMap:
         """        
         return [
             [
-                0  # terrain_types[random.randint(0, len(terrain_types) - 1)][1]
-                for x in range(nrow)
+                # 0  # terrain_types[random.randint(0, len(terrain_types) - 1)][1]
+                Tile(row,column,terrain_types) for column in range(nrows)
             ]
-            for i in range(ncol)
+            for row in range(ncols)
         ]
+
 
     def __str__(self):
         map_string = ""
-        for idx, row in enumerate(self.game_map):
-            map_string += f"{row}\n"
-            if idx == self.nrow - 1:
-                map_string += f"{row}"
+        for idx_r, row in enumerate(self.game_map):
+            map_string += "\n"
+            for idx_c, col in enumerate(row):
+                map_string += f"{col.entropy} "
         return map_string
 
 
