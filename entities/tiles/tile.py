@@ -2,10 +2,10 @@ import random
 
 terrain_types = {
     # ("terrain","unicode char","entropy")
-    "water":("water", "\U0001F4A7", ["water", "coast"]),
-    "coast":("coast", "\U0001F30A", ["coast", "water", "grassland"]),
-    "grassland":("grassland", "\U0001F7E9", ["grassland", "coast", "forrest"]),
-    "forrest":("forrest", "\U0001F332", ["forrest", "grassland"]),
+    "water":("water", "\U0001F4A7", {"water", "coast"}),
+    "coast":("coast", "\U0001F30A", {"coast", "water", "grassland"}),
+    "grassland":("grassland", "\U0001F7E9", {"grassland", "coast", "forrest"}),
+    "forrest":("forrest", "\U0001F332", {"forrest", "grassland"}),
     # ("coast_ne", "\U0001F30A"),
     # ("coast_e", "\U0001F30A"),
     # ("coast_se", "\U0001F30A"),
@@ -46,19 +46,25 @@ class Tile:
     def get_neighbours(self):
         """
         creates a list of tuples corresponding to the x,y coordinates of the neighbouring tiles.
+
         Yields:
             list: a list of tuples [(x1,y1), ... (xn,yn)]
-        """  
+        """ 
         for x,y in self.relative_neighbours:
+
+            ## needs a check if coordinates are out of the map
+            ## maybe set a global varianble with map size
+
             yield (self.coordinates[0]+x, self.coordinates[1]+y)
 
 
 
 
     def set_terrain_type(self,terrain_type):
-        """_summary_
-        sets a the terrain-type of a tile. self.terrain_type should be a tuple containing:\n
+        """
+        Sets a the terrain-type of a tile: to a tuple like:\n
             ("water","\\U0001F4A7",["water", "coast"])
+        
         Args:
             terrain_type (_str_): str corresponding to a terrain type e.g. "water"
         """
@@ -91,6 +97,16 @@ class GameMap:
         self.game_map = self.create_map(nrow, ncol)
 
     def create_map(self, nrow, ncol):
+        """
+        Creates and returns a blank map.
+
+        Args:
+            nrow (int): the number of rows
+            ncol (int): the number of columns
+
+        Returns:
+            list: containing nrow of lists of size nrol
+        """        
         return [
             [
                 0  # terrain_types[random.randint(0, len(terrain_types) - 1)][1]
